@@ -7,7 +7,7 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
 
@@ -50,6 +50,15 @@ export default function App() {
     registerForPushNotificationsAsync();
   }, []);
 
+  // useEffect(() => {
+  //   // Send notification every 10 seconds
+  //   const interval = setInterval(() => {
+  //     sendPushNotification(userToken);
+  //   }, 10000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>EatNow</Text>
@@ -63,17 +72,37 @@ export default function App() {
           value={isEnabled}
         />
       </View>
-      {isEnabled && <Text>Ok I'll remind youaaa</Text>}
+      {isEnabled && <Text>Ok I'll remind you</Text>}
       {!isEnabled && <Text>Fine I won't remind you</Text>}
 
       <View style={{ borderWidth: 2, padding: 10, margin: 30 }}>
         <Text style={{ fontSize: 18, marginTop: 20 }}>
           Type something below
         </Text>
-        <TextInput style={styles.input} defaultValue="You can type in me man" />
+        <TextInput style={styles.input} placeholder="Type here" />
       </View>
     </View>
   );
+}
+
+async function sendPushNotification(expoPushToken) {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: "Hey you!",
+    body: "Put something in that tummy",
+    data: { someData: "goes here" },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
 }
 
 const styles = StyleSheet.create({
