@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "firstRNapp",
-    "slug": "firstRNapp",
+    "slug": "eatnow",
     "version": "1.0.0",
+    "owner": "nutlope",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },

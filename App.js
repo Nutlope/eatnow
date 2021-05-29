@@ -1,9 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, View, Switch } from "react-native";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
   const [isEnabled, setIsEnabled] = useState(false);
+  const [userToken, setUserToken] = useState();
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      const token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+      setUserToken(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+  };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -18,14 +63,14 @@ export default function App() {
           value={isEnabled}
         />
       </View>
-      {isEnabled && <Text>Ok I'll remind you</Text>}
+      {isEnabled && <Text>Ok I'll remind youaaa</Text>}
       {!isEnabled && <Text>Fine I won't remind you</Text>}
 
       <View style={{ borderWidth: 2, padding: 10, margin: 30 }}>
         <Text style={{ fontSize: 18, marginTop: 20 }}>
           Type something below
         </Text>
-        <TextInput style={styles.input} defaultValue="You can type in me" />
+        <TextInput style={styles.input} defaultValue="You can type in me man" />
       </View>
     </View>
   );
