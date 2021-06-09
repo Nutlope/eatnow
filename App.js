@@ -48,6 +48,7 @@ export default function App() {
 
   useEffect(() => {
     registerForPushNotificationsAsync();
+    console.log(Date().toLocaleString());
   }, []);
 
   // useEffect(() => {
